@@ -21,11 +21,7 @@ def main():
 
     # Get image arrays and labels for all image files
     images, labels = load_data(sys.argv[1])
-
-    # print(labels)
-    assert len(images) == len(labels)
-    # exit()
-    
+   
     # Split data into training and testing sets
     labels = tf.keras.utils.to_categorical(labels)
     x_train, x_test, y_train, y_test = train_test_split(
@@ -40,7 +36,6 @@ def main():
     termcolor.cprint("--- OK TILL HERE TOO ---", 'green')
     # Evaluate neural network performance
     model.evaluate(x_test,  y_test, verbose=2)
-
     # Save model to file
     if len(sys.argv) == 3:
         filename = sys.argv[2]
@@ -93,17 +88,29 @@ def get_model():
     """
 
     model = tf.keras.models.Sequential([
-        # convolutional layer
+        # convolutional and max-pooling layers
         tf.keras.layers.Conv2D(
-            512, (3, 3), activation="relu", input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)
+            64, (3, 3), activation="relu", input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)
         ),
-        # max-pooling with 2x2 pool
         tf.keras.layers.MaxPooling2D(
             pool_size=(2, 2)
         ),
+
+        # convolutional and max-pooling layers
+        tf.keras.layers.Conv2D(
+            64, (3, 3), activation="relu", input_shape=(IMG_WIDTH/6, IMG_HEIGHT/6, 3)
+        ),
+        tf.keras.layers.MaxPooling2D(
+            pool_size=(2, 2)
+        ),
+
         # flatten-layer
         tf.keras.layers.Flatten(),
-        # no hidden layers
+
+        tf.keras.layers.Dense(
+            5*NUM_CATEGORIES, activation="relu"
+        ),
+
         # output layer with NUM_CATEGORIES output units
         tf.keras.layers.Dense(
             NUM_CATEGORIES, activation="softmax"

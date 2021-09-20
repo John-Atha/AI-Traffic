@@ -2,8 +2,7 @@
 
 ## Project 5 - Traffic
 
-* An AI to classify traffic signs that appear in photographs.
-
+* An AI to classify traffic signs that appear in images.
 
 ## Usage
 
@@ -53,7 +52,7 @@
 > > #### I modify the number of the filters of the convolutional layer:
 > > * simple2.h5 with 64 filters: `333/333 - 4s - loss: 0.5585 - accuracy: 0.9437`
 > > * simple3.h5 with 128 filters: `333/333 - 7s - loss: 0.5380 - accuracy: 0.9396`
-> > * simple4.h5 with 256 filters: `333/333 - 13s - loss: 0.5300 - accuracy: 0.9510`
+> > * simple4.h5 with 256 filters: `333/333 - 13s - loss: 0.5300 - accuracy: 0.9410`
 > > * simple5.h5 with 512 filters: `333/333 - 38s - loss: 0.5634 - accuracy: 0.9412`
 > > * The best number of filters seems to be 64.
 > > #### Now, I will use 64 filters and try modifying the kernel size:
@@ -83,107 +82,121 @@
 > > * Each convolution layer has 64 filters with a 3x3 kernel
 > > * Each pooling layer is a max-pooling layer with a 2x2 pool
 
-## Hidden layers
-> ### Predecessor concolutional-pooling layers
+## Hidden layers - Dropout
+> ### Predecessor convolutional-pooling layers
 > > * So far, the convolutional neural network did not have any hidden layers.
 > > * I will be using the two previous optimal convolutional-pooling layers.
 > > * Each convolutional layer will have 64 filters with a 3x3 kernel.
 > > * Each max-pooling layer will have 2x2 pooling size.
 > > * I start adding hidden layers with 'relu' activation for all of their units
+>
 > ### Number of hidden layer's units
-> > #### At first, I am adding only one hidden layer with x units and i try modifying the x factor
+> > #### At first, I am adding only one hidden layer with x units and I try modifying the x factor
 > > * simple21.h5 with x=NUM_CATEGORIES:   `333/333 - 7s - loss: 3.5026 - accuracy: 0.0572`
 > > * simple22.h5 with x=2*NUM_CATEGORIES: `333/333 - 6s - loss: 0.3638 - accuracy: 0.9261`
-> > * simple23.h5 with x=3*NUM_CATEGORIES: `333/333 - 7s - loss: 0.2514 - accuracy: 0.9544`
+> > * simple23.h5 with x=3*NUM_CATEGORIES: `333/333 - 7s - loss: 0.2608 - accuracy: 0.9506` (best)
 > > * simple24.h5 with x=4*NUM_CATEGORIES: `333/333 - 7s - loss: 0.3524 - accuracy: 0.9432`
 > > * simple25.h5 with x=5*NUM_CATEGORIES: `333/333 - 7s - loss: 0.2840 - accuracy: 0.9479 `
 > > #### Conclusion
 > > * So, it looks like the optimal number of units is about 3*NUM_CATEGORIES
+>
 > ### Number of hidden layers
-> > #### I will start adding more hidden layers, at first with x={3*NUM_CATEGORIES} units at each one
-> > * simple26.h5 with 2 hidden layers of x units each: 
-> > 
-> > 
-> > 
-- - - 
-#### simple6.h5
-* Now I am `adding a hidden layer` and I have a simple convolutional network, with:
-    * one convolutional layer with 32 filters using a 3x3 kernel
-    * one max-pooling layer using 2x2 pool size
-    * one hidden layer with two units and relu activation
-    * RESULT: `333/333 - 2s - loss: 3.5001 - accuracy: 0.0545`
+> > #### I will start adding more hidden layers with various units numbers, and without dropout, where x=NUM_CATEGORIES
+> > * simple26.h5 with 2 hidden layers of 3x and 3x units: `333/333 - 9s - loss: 0.2708 - accuracy: 0.9405`
+> > * simple47.h5 with 2 hidden layers of 3x and 1x units: `333/333 - 7s - loss: 0.1940 - accuracy: 0.9620` (best)
+> > * simple28.h5 with 2 hidden layers of 3x and 2x units: `333/333 - 8s - loss: 0.2907 - accuracy: 0.9363`
+> > * simple29.h5 with 2 hidden layers of 2x and 2x units: `333/333 - 7s - loss: 0.2934 - accuracy: 0.9404`
+> > * simple30.h5 with 2 hidden layers of 2x and 1x units: `333/333 - 8s - loss: 0.3090 - accuracy: 0.9383`
+> > * simple31.h5 with 2 hidden layers of 1x and 1x units: `333/333 - 7s - loss: 3.4992 - accuracy: 0.0504`
+> > #### Conclusion 
+> > * I will not try adding more hidden layers, to avoid the danger of overfitting
+> > * It looks as the best combination is the model 47, with 3x and 1x units, achieving accuracy around 96%
+> > * The models 26 and 29, also seem to have high accuracy
+> 
+> ### Dropout on one hidden layer
+> > #### I will try different dropout values around 0.5 for the previous hidden layer of 3*NUM_CATEGORIES units
+> > * simple23.h5 without dropout:  `333/333 - 7s - loss: 0.2608 - accuracy: 0.9506` (highest)
+> > * simple37.h5 with dropout=0.2: `333/333 - 8s - loss: 0.2036 - accuracy: 0.9540` (highest)
+> > * simple32.h5 with dropout=0.3: `333/333 - 7s - loss: 0.2034 - accuracy: 0.9491` (highest)
+> > * simple33.h5 with dropout=0.4: `333/333 - 10s - loss: 3.4991 - accuracy: 0.0552`
+> > * simple34.h5 with dropout=0.5: `333/333 - 7s - loss: 0.1820 - accuracy: 0.9474`
+> > * simple35.h5 with dropout=0.6: `333/333 - 7s - loss: 0.2469 - accuracy: 0.9331`
+> > * simple36.h5 with dropout=0.7: `333/333 - 8s - loss: 3.4975 - accuracy: 0.0540`
+> > #### Conclusion
+> > * I observe that, the larger the dropout gets, the better the testing accuracy gets compared to the training accuracy
+> > * It looks like the optimal dropout for a hidden layer with 3*NUM_CATEGORIES units is at most equal to 0.3
+>
+> ### Dropout on multiple layers
+> > #### I will try the three different dropouts 0, 0.2 and 0.3 on the layers of the models 26, 47, 29:
+> >
+> > #### Modifications of model 47
+> > * simple42.h5 with 2 hidden layers of:
+> > * * 3x units with 0.3 droppout and 1x units with 0.3 dropout:
+> > * * * result: `333/333 - 8s - loss: 0.1700 - accuracy: 0.9561`
+> > * simple43.h5 with 2 hidden layers of:
+> > * * 3x units with 0.3 droppout and 1x units with 0.2 dropout:
+> > * * * result: `333/333 - 7s - loss: 0.1483 - accuracy: 0.9616`
+> > * simple44.h5 with 2 hidden layers of:
+> > * * 3x units with 0.2 droppout and 1x units with 0.3 dropout:
+> > * * * result: `333/333 - 7s - loss: 0.1504 - accuracy: 0.9643` (best)
+> > * simple45.h5 with 2 hidden layers of:
+> > * * 3x units with 0.3 droppout and 1x units with no dropout:
+> > * * * result: `333/333 - 10s - loss: 0.1679 - accuracy: 0.9605`
+> > * simple46.h5 with 2 hidden layers of:
+> > * * 3x units with 0.2 droppout and 1x units with no dropout:
+> > * * * result: `333/333 - 6s - loss: 0.2263 - accuracy: 0.9393`
+> > * simple48.h5 with 2 hidden layers of:
+> > * * 3x units with 0.5 droppout and 1x units with no dropout:
+> > * * * result: `333/333 - 7s - loss: 0.5304 - accuracy: 0.8492`
+> >
+> > #### Modifications of model 26
+> > * simple38.h5 with 2 hidden layers of:
+> > * * 3x units with 0.3 droppout and 3x units with 0.3 dropout:
+> > * * * result: `333/333 - 9s - loss: 0.1832 - accuracy: 0.9511`
+> > * simple39.h5 with 2 hidden layers of:
+> > * * 3x units with 0.3 droppout and 3x units with 0.2 dropout:
+> > * * * result: `333/333 - 7s - loss: 0.1478 - accuracy: 0.9602`
+> > * simple40.h5 with 2 hidden layers of:
+> > * * 3x units with 0.2 droppout and 3x units with 0.3 dropout:
+> > * * * result: `333/333 - 7s - loss: 0.1917 - accuracy: 0.9516`
+> > * simple41.h5 with 2 hidden layers of:
+> > * * 3x units with 0.2 droppout and 3x units with 0.2 dropout:
+> > * * * result: `333/333 - 10s - loss: 0.2959 - accuracy: 0.9207`
+> >
+> > #### Modifications of model 29
+> > * simple42.h5 with 2 hidden layers of:
+> > * * 2x units with 0.3 droppout and 2x units with 0.3 dropout:
+> > * * * result: `333/333 - 6s - loss: 0.2583 - accuracy: 0.9240`
+> > * simple43.h5 with 2 hidden layers of:
+> > * * 2x units with 0.3 droppout and 2x units with 0.2 dropout:
+> > * * * result: `333/333 - 6s - loss: 0.2478 - accuracy: 0.9364`
+> > * simple44.h5 with 2 hidden layers of:
+> > * * 2x units with 0.2 droppout and 2x units with 0.3 dropout:
+> > * * * result: `333/333 - 7s - loss: 3.5002 - accuracy: 0.0574`
+> > * simple45.h5 with 2 hidden layers of:
+> > * * 2x units with 0.2 droppout and 2x units with 0.2 dropout:
+> > * * * result: `333/333 - 7s - loss: 0.1627 - accuracy: 0.9600`
+> >
+> > #### Conclusion
+> > * Adding dropout, does not increase the accuracy above 97%
+> > * It seems that it can help each model achieve a slightly higher accuracy than before:
+> > *  * model47: 0.9620 -> max 0.9643
+> > *  * model26: 0.9405 -> max 0.9602
+> > *  * model29: 0.9404 -> max 0.9600
+> > * But, it does not improve the network that much.
 
-#### simple7.h5
-* Now I am `adding one more unit to the hidden layer` and I have a simple convolutional network, with:
-    * one convolutional layer with 32 filters using a 3x3 kernel
-    * one max-pooling layer using 2x2 pool size
-    * one hidden layer with three units and relu activation
-    * RESULT: `333/333 - 2s - loss: 3.4926 - accuracy: 0.0556`
-
-#### simple8.h5
-* Now I am `increase the hidden layer's units` and I have a simple convolutional network, with:
-    * one convolutional layer with 32 filters using a 3x3 kernel
-    * one max-pooling layer using 2x2 pool size
-    * one hidden layer with `NUM_CATEGORIES units` and relu activation
-    * RESULT: `333/333 - 3s - loss: 3.4961 - accuracy: 0.0568`
-
-#### simple9.h5
-* Now I am `increase even more the hidden layer's units` and I have a simple convolutional network, with:
-    * one convolutional layer with 32 filters using a 3x3 kernel
-    * one max-pooling layer using 2x2 pool size
-    * one hidden layer with `2*NUM_CATEGORIES units` and relu activation
-    * RESULT: `333/333 - 4s - loss: 0.5583 - accuracy: 0.9252`
-
-#### simple10.h5
-* Now I am `trying to find the hidden layer's units border` and I have a simple convolutional network, with:
-    * one convolutional layer with 32 filters using a 3x3 kernel
-    * one max-pooling layer using 2x2 pool size
-    * one hidden layer with `NUM_CATEGORIES+1 units` and relu activation
-    * RESULT: `333/333 - 3s - loss: 3.4940 - accuracy: 0.0517`
-
-#### simple11.h5
-* Now I am `increase even more the hidden layer's units` and I have a simple convolutional network, with:
-    * one convolutional layer with 32 filters using a 3x3 kernel
-    * one max-pooling layer using 2x2 pool size
-    * one hidden layer with `3*NUM_CATEGORIES units` and relu activation
-    * RESULT: `333/333 - 3s - loss: 0.5007 - accuracy: 0.9384`
-
-#### simple12.h5
-* Now I am `increase the hidden layers` and I have a simple convolutional network, with:
-    * one convolutional layer with 32 filters using a 3x3 kernel
-    * one max-pooling layer using 2x2 pool size
-    * two hidden layers with `2*NUM_CATEGORIES units` each and relu activation
-    * RESULT: `333/333 - 3s - loss: 0.4365 - accuracy: 0.9265`
-
- #### simple13.h5
-* Now I am `increase the hidden layers' units` and I have a simple convolutional network, with:
-    * one convolutional layer with 32 filters using a 3x3 kernel
-    * one max-pooling layer using 2x2 pool size
-    * two hidden layers with `3*NUM_CATEGORIES units` each and relu activation
-    * RESULT: `333/333 - 3s - loss: 0.4693 - accuracy: 0.9241`
-
- #### simple15.h5
-* Now I am `increase the hidden layers` and I have a simple convolutional network, with:
-    * one convolutional layer with 32 filters using a 3x3 kernel
-    * one max-pooling layer using 2x2 pool size
-    * three hidden layers with `2*NUM_CATEGORIES units` each and relu activation
-    * RESULT: `333/333 - 3s - loss: 0.5186 - accuracy: 0.8684`
-
- #### simple14.h5
-* Now I am `increase the hidden layers' units` and I have a simple convolutional network, with:
-    * one convolutional layer with 32 filters using a 3x3 kernel
-    * one max-pooling layer using 2x2 pool size
-    * three hidden layers with `3*NUM_CATEGORIES units` each and relu activation
-    * RESULT: `333/333 - 3s - loss: 0.3721 - accuracy: 0.9291`
-
-#### simple16.h5
-* Now I  I have a simple convolutional network, with:
-    * one convolutional layer with 64 filters using a 3x3 kernel
-    * one max-pooling layer using 2x2 pool size
-    * one hidden layer with `2*NUM_CATEGORIES units` each and relu activation
-    * RESULT: `333/333 - 5s - loss: 0.5114 - accuracy: 0.9275`
-
-
+## Conclusion
+> * The best model of the ones I tried seems to be the `simple44.h5` model, with 0.9643 accuracy on the testing set.
+> * The code for this neural network is in the `traffic.py` file
+> * This convolutional neural network consists of:
+> * * One input layer
+> * * Two convolutional-pooling layers, each one with:
+> * * * A convolutional layer with 64 filters of a 3x3 kernel and with relu activation
+> * * * A max-pooling layer of a 2x2 pool 
+> * * Two hidden layers:
+> * * * The first one with 3*NUM_CATEGORIES units,  relu activation
+> * * * The second one with NUM_CATEGORIES units and relu activation
+> * * One output layer with NUM_CATEGORIES units and softmax activation
 
 - - -
 

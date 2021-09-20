@@ -3,13 +3,12 @@ import numpy as np
 import os
 import sys
 import tensorflow as tf
-import termcolor
 from sklearn.model_selection import train_test_split
 
 EPOCHS = 10
 IMG_WIDTH = 30
 IMG_HEIGHT = 30
-NUM_CATEGORIES = 43 if True else 3
+NUM_CATEGORIES = 43
 TEST_SIZE = 0.4
 
 
@@ -30,10 +29,8 @@ def main():
     # Get a compiled neural network
     model = get_model()
 
-    termcolor.cprint("--- OK TILL HERE ---", 'green')
     # Fit model on training data
     model.fit(x_train, y_train, epochs=EPOCHS)
-    termcolor.cprint("--- OK TILL HERE TOO ---", 'green')
     # Evaluate neural network performance
     model.evaluate(x_test,  y_test, verbose=2)
     # Save model to file
@@ -88,33 +85,27 @@ def get_model():
     """
 
     model = tf.keras.models.Sequential([
-        # convolutional and max-pooling layers
-        tf.keras.layers.Conv2D(
-            64, (3, 3), activation="relu", input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)
-        ),
-        tf.keras.layers.MaxPooling2D(
-            pool_size=(2, 2)
-        ),
 
         # convolutional and max-pooling layers
-        tf.keras.layers.Conv2D(
-            64, (3, 3), activation="relu", input_shape=(IMG_WIDTH/6, IMG_HEIGHT/6, 3)
-        ),
-        tf.keras.layers.MaxPooling2D(
-            pool_size=(2, 2)
-        ),
+        tf.keras.layers.Conv2D( 64, (3, 3), activation="relu", input_shape=(IMG_WIDTH, IMG_HEIGHT, 3) ),
+        tf.keras.layers.MaxPooling2D( pool_size=(2, 2) ),
+
+        # convolutional and max-pooling layers
+        tf.keras.layers.Conv2D( 64, (3, 3), activation="relu" ),
+        tf.keras.layers.MaxPooling2D( pool_size=(2, 2) ),
 
         # flatten-layer
         tf.keras.layers.Flatten(),
 
-        tf.keras.layers.Dense(
-            5*NUM_CATEGORIES, activation="relu"
-        ),
+        # hidden layers
+        tf.keras.layers.Dense( 3*NUM_CATEGORIES, activation="relu" ),
+        tf.keras.layers.Dropout(0.2),
 
+        tf.keras.layers.Dense( NUM_CATEGORIES, activation="relu" ),
+        tf.keras.layers.Dropout(0.3),
+        
         # output layer with NUM_CATEGORIES output units
-        tf.keras.layers.Dense(
-            NUM_CATEGORIES, activation="softmax"
-        )
+        tf.keras.layers.Dense( NUM_CATEGORIES, activation="softmax" )
     ])
 
     model.compile(

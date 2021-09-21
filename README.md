@@ -3,6 +3,7 @@
 ## Project 5 - Traffic
 
 * An AI to classify traffic signs that appear in images.
+* A short presentation of the project can be found at: https://www.youtube.com/watch?v=Gw2oQew-jug
 
 ## Usage
 

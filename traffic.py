@@ -101,7 +101,7 @@ def get_model():
         tf.keras.layers.Dense( 3*NUM_CATEGORIES, activation="relu" ),
         tf.keras.layers.Dropout(0.2),
 
-        tf.keras.layers.Dense( NUM_CATEGORIES, activation="relu" ),
+        tf.keras.layers.Dense( 1*NUM_CATEGORIES, activation="relu" ),
         tf.keras.layers.Dropout(0.3),
         
         # output layer with NUM_CATEGORIES output units

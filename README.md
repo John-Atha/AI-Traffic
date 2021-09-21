@@ -50,13 +50,13 @@
 ## Convolutional-pooling layers
 > ### Convolutional layer
 > > #### I modify the number of the filters of the convolutional layer:
-> > * simple2.h5 with 64 filters: `333/333 - 4s - loss: 0.5585 - accuracy: 0.9437`
+> > * simple2.h5 with 64 filters: `333/333 - 4s - loss: 0.5585 - accuracy: 0.9437` (best)
 > > * simple3.h5 with 128 filters: `333/333 - 7s - loss: 0.5380 - accuracy: 0.9396`
 > > * simple4.h5 with 256 filters: `333/333 - 13s - loss: 0.5300 - accuracy: 0.9410`
 > > * simple5.h5 with 512 filters: `333/333 - 38s - loss: 0.5634 - accuracy: 0.9412`
 > > * The best number of filters seems to be 64.
 > > #### Now, I will use 64 filters and try modifying the kernel size:
-> > * simple2.h5 with 3x3 kernel size:  `333/333 - 4s - loss: 0.5585 - accuracy: 0.9437`
+> > * simple2.h5 with 3x3 kernel size:  `333/333 - 4s - loss: 0.5585 - accuracy: 0.9437` (best)
 > > * simple17.h5 with 5x5 kernel size: `333/333 - 5s - loss: 0.6377 - accuracy: 0.9248`
 > > * simple2.h5, with 64 filters and 3x3 kernel seems to be better
 > > #### Conclusion
@@ -64,7 +64,7 @@
 > 
 > ### Pooling layer
 > > #### Now, using this convolutional layer, I will try modifying the pool size of the max-pooling layer
-> > * simple2.h5 with 2x2 pool size:  `333/333 - 4s - loss: 0.5585 - accuracy: 0.9437`
+> > * simple2.h5 with 2x2 pool size:  `333/333 - 4s - loss: 0.5585 - accuracy: 0.9437` (best)
 > > * simple20.h5 with 3x3 pool size: `333/333 - 4s - loss: 0.5462 - accuracy: 0.9326`
 > > * So, increasing the pool size does not seem to lead to any progress
 > > #### Conclusion
@@ -73,7 +73,7 @@
 > ### Multiple convolutional and max-pooling layers
 > > #### Using the previous convolutional layer with 64 filters and 3x3 kernel size and the max-pooling layer with 2x2 pool size, I will try modifying the number of these layers
 > > * simple2.h5 with 1 convolutional layer:   `333/333 - 4s - loss: 0.5585 - accuracy: 0.9437`
-> > * simple19.h5 with 2 convolutional layers: `333/333 - 7s - loss: 0.2389 - accuracy: 0.9583`
+> > * simple19.h5 with 2 convolutional layers: `333/333 - 7s - loss: 0.2389 - accuracy: 0.9583` (best)
 > > #### Conclusion
 > > * So, it looks like two convolutional layers lead to a better trained neural network
 > 
@@ -138,7 +138,7 @@
 > > * * * result: `333/333 - 7s - loss: 0.1483 - accuracy: 0.9616`
 > > * simple44.h5 with 2 hidden layers of:
 > > * * 3x units with 0.2 droppout and 1x units with 0.3 dropout:
-> > * * * result: `333/333 - 7s - loss: 0.1504 - accuracy: 0.9643` (best)
+> > * * * result: `333/333 - 7s - loss: 0.0856 - accuracy: 0.9796` (best)
 > > * simple45.h5 with 2 hidden layers of:
 > > * * 3x units with 0.3 droppout and 1x units with no dropout:
 > > * * * result: `333/333 - 10s - loss: 0.1679 - accuracy: 0.9605`
@@ -178,15 +178,13 @@
 > > * * * result: `333/333 - 7s - loss: 0.1627 - accuracy: 0.9600`
 > >
 > > #### Conclusion
-> > * Adding dropout, does not increase the accuracy above 97%
-> > * It seems that it can help each model achieve a slightly higher accuracy than before:
-> > *  * model47: 0.9620 -> max 0.9643
+> > * Adding dropout seems that helps each model achieve a slightly higher accuracy around 20% than before:
+> > *  * model47: 0.9620 -> max 0.9796
 > > *  * model26: 0.9405 -> max 0.9602
 > > *  * model29: 0.9404 -> max 0.9600
-> > * But, it does not improve the network that much.
 
 ## Conclusion
-> * The best model of the ones I tried seems to be the `simple44.h5` model, with 0.9643 accuracy on the testing set.
+> * The best model of the ones I tried seems to be the `simple44.h5` model, with 0.9796 accuracy on the testing set.
 > * The code for this neural network is in the `traffic.py` file
 > * This convolutional neural network consists of:
 > * * One input layer
